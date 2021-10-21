@@ -6,6 +6,7 @@ MERGED_FILE_NAME="merged.mp4"
 COMPRESSED_FILE_NAME="compressed.m4v"
 
 COMPRESS_FILE=false
+USE_GPU=false
 
 PATH_FOLDER=""
 
@@ -36,7 +37,72 @@ function merge() {
     ffmpeg -f concat -safe 0 -i "$1" -c copy "$2"
 }
 
-while getopts "p:ch" option ; 
+# PARAMS
+#
+# $1 -> Folder path
+# $2 -> Use GPU
+function explore() {
+    for file in "$1"/*
+        do
+            file_name="$(basename -- "$file")"
+
+            if ! [ -d "$file" ]
+                then
+                    if [ file_name != $LIST_FILE_NAME ] && [ file_name != $MERGED_FILE_NAME ] && [ file_name != $COMPRESSED_FILE_NAME ]
+                        then
+                            for video in "$1"/*
+                                do
+                                    echo "file '$video'" >> $LIST_FILE_NAME
+                                done
+
+                            merge $LIST_FILE_NAME $MERGED_FILE_NAME
+
+                            mkdir -p original
+
+                            for video in "$1"/*
+                                do
+                                    file_name="$(basename -- "$video")"
+
+                                    if [ "$file_name" != "$ORIGINAL_DIR_NAME" ] && [ "$file_name" != $LIST_FILE_NAME ] && [ "$file_name" != $MERGED_FILE_NAME ]
+                                        then
+                                            mv "$video" $ORIGINAL_DIR_NAME/.
+                                        fi
+                                done
+
+                            if $COMPRESS_FILE
+                                then
+                                    compress $USE_GPU $MERGED_FILE_NAME $COMPRESSED_FILE_NAME
+                                fi;
+                        fi;
+                else
+                    if [ file_name != "$ORIGINAL_DIR_NAME" ]
+                        then
+                            cd "$file" || exit
+
+                            explore "$file"
+                        fi;
+                fi
+        done
+}
+
+# PARAMS
+#
+# $1 -> Folder path
+# $2 -> Use GPU
+function main() {
+    if [ -z "$1" ]
+        then
+            echo "Empty path"
+
+            exit 0
+        fi;
+    
+    explore "$1" "$2"
+
+    exit 0
+}
+
+while getopts "p:cgh" option ; 
     do
         case "${option}" in
             p)
@@ -47,6 +113,10 @@ while getopts "p:ch" option ;
                 COMPRESS_FILE=true
                 echo "$COMPRESS_FILE"
                 ;;
+            g)
+                USE_GPU=true
+                echo "$USE_GPU"
+                ;;
             h | *)
                 help
                 ;;
@@ -54,3 +124,5 @@ while getopts "p:ch" option ;
     done
 
 shift $((OPTIND-1))
+
+main "$PATH_FOLDER" "$COMPRESS_FILE"
