@@ -14,6 +14,11 @@ function help() {
     exit 1
 }
 
+# PARAMS
+#
+# $1 -> Use GPU
+# $2 -> Source file
+# $3 -> Output file
 function compress() {
     if [ "$1" = true ]
         then
@@ -23,6 +28,10 @@ function compress() {
         fi;
 }
 
+# PARAMS
+#
+# $1 -> File list
+# $2 -> Output file
 function merge() {
     ffmpeg -f concat -safe 0 -i "$1" -c copy "$2"
 }
