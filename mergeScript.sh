@@ -14,6 +14,10 @@ function help() {
     exit 1
 }
 
+function merge() {
+    ffmpeg -f concat -safe 0 -i "$1" -c copy "$2"
+}
+
 while getopts "p:ch" option ; 
     do
         case "${option}" in
