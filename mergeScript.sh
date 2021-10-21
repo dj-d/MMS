@@ -14,6 +14,15 @@ function help() {
     exit 1
 }
 
+function compress() {
+    if [ "$1" = true ]
+        then
+            ffmpeg -hwaccel cuda -i "$2" "$3"
+        else
+            ffmpeg -i "$2" "$3"
+        fi;
+}
+
 function merge() {
     ffmpeg -f concat -safe 0 -i "$1" -c copy "$2"
 }
