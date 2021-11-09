@@ -48,11 +48,16 @@ function explore() {
 
             if ! [ -d "$file" ]
                 then
-                    if [ file_name != $LIST_FILE_NAME ] && [ file_name != $MERGED_FILE_NAME ] && [ file_name != $COMPRESSED_FILE_NAME ]
+                    if [ "$file_name" != $LIST_FILE_NAME ] && [ "$file_name" != $MERGED_FILE_NAME ] && [ "$file_name" != $COMPRESSED_FILE_NAME ]
                         then
                             for video in "$1"/*
                                 do
-                                    echo "file '$video'" >> $LIST_FILE_NAME
+                                    file_name="$(basename -- "$video")"
+
+                                    if [ "$file_name" != "$ORIGINAL_DIR_NAME" ] && [ "$file_name" != $LIST_FILE_NAME ] && [ "$file_name" != $MERGED_FILE_NAME ] && [ "$file_name" != $COMPRESSED_FILE_NAME ]
+                                        then
+                                            echo "file '$video'" >> $LIST_FILE_NAME
+                                        fi
                                 done
 
                             merge $LIST_FILE_NAME $MERGED_FILE_NAME
@@ -63,7 +68,7 @@ function explore() {
                                 do
                                     file_name="$(basename -- "$video")"
 
-                                    if [ "$file_name" != "$ORIGINAL_DIR_NAME" ] && [ "$file_name" != $LIST_FILE_NAME ] && [ "$file_name" != $MERGED_FILE_NAME ]
+                                    if [ "$file_name" != "$ORIGINAL_DIR_NAME" ] && [ "$file_name" != $LIST_FILE_NAME ] && [ "$file_name" != $MERGED_FILE_NAME ] && [ "$file_name" != $COMPRESSED_FILE_NAME ]
                                         then
                                             mv "$video" $ORIGINAL_DIR_NAME/.
                                         fi
@@ -75,7 +80,7 @@ function explore() {
                                 fi;
                         fi;
                 else
-                    if [ file_name != "$ORIGINAL_DIR_NAME" ]
+                    if [ "$file_name" != "$ORIGINAL_DIR_NAME" ]
                         then
                             cd "$file" || exit
 
