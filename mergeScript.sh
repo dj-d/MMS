@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: To fix double compression request
+
 LIST_FILE_NAME="mylist.txt"
 ORIGINAL_DIR_NAME="original"
 MERGED_FILE_NAME="merged.mp4"
