@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: To fix double compression request
-
 LIST_FILE_NAME="mylist.txt"
 ORIGINAL_DIR_NAME="original"
 MERGED_FILE_NAME="merged.mp4"
@@ -79,6 +77,8 @@ function explore() {
                             if $COMPRESS_FILE
                                 then
                                     compress $USE_GPU $MERGED_FILE_NAME $COMPRESSED_FILE_NAME
+
+                                    mv "$MERGED_FILE_NAME" $ORIGINAL_DIR_NAME/
                                 fi;
                         fi;
                 else
