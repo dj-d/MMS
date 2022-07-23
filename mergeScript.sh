@@ -3,7 +3,7 @@
 LIST_FILE_NAME="mylist.txt"
 ORIGINAL_DIR_NAME="original"
 MERGED_FILE_NAME="merged.mp4"
-COMPRESSED_FILE_NAME="compressed.m4v"
+COMPRESSED_FILE_NAME="compressed.mp4"
 
 COMPRESS_FILE=false
 USE_GPU=false
@@ -84,6 +84,10 @@ function explore() {
                 else
                     if [ "$file_name" != "$ORIGINAL_DIR_NAME" ]
                         then
+                            IFS='/' read -r -a array <<< "$file"
+                            
+                            COMPRESSED_FILE_NAME="${array[-1]}.m4v"
+
                             cd "$file" || exit
 
                             explore "$file"
